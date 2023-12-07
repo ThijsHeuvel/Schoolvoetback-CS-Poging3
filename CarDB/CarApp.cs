@@ -8,12 +8,10 @@ namespace SimpleCrud
 {
     internal class CarApp
     {
-        CarContext dataContext;
         UserContext userContext;
 
         public CarApp()
         {
-            dataContext = new CarContext();
             userContext = new UserContext();
         }
 
@@ -42,7 +40,7 @@ namespace SimpleCrud
                     break;
                 case "3":
                     // Show all
-                    ShowAll();
+                    // ShowAll();
                     break;
                 default:
                     // Invalid input
@@ -52,7 +50,7 @@ namespace SimpleCrud
             Helpers.Pause();
         }
 
-        private void Delete()
+        /*private void Delete()
         {
             Car car = SelectCar();
             dataContext.Cars.Remove(car);
@@ -61,7 +59,6 @@ namespace SimpleCrud
             Console.WriteLine("Car Deleted.");
 
         }
-
 
         private void AddNew()
         {
@@ -116,7 +113,7 @@ namespace SimpleCrud
             dataContext.Cars.Update(car);
             dataContext.SaveChanges();
 
-        }
+        }*/
 
         // Methods used for Gamble App
         private void Register()

@@ -33,5 +33,10 @@
             Console.WriteLine("Press <ENTER> to continue...");
             Console.ReadLine();
         }
+
+        internal static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
+        }
     }
 }

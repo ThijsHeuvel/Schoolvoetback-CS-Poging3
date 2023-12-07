@@ -166,7 +166,7 @@ namespace SimpleCrud
             }
 
             // Hash the password
-            // ?
+            password = Helpers.HashPassword(password);
             
             User user = new User(username, password);
             userContext.Users.Add(user);
@@ -193,8 +193,8 @@ namespace SimpleCrud
                         {
                             string password = Helpers.Ask("Wachtwoord:");
 
-                            // HASH PASSWORD & validate it
-                            if (password == item.Password)
+                            // Hash and validate password
+                            if (Helpers.HashPassword(password) == item.Password)
                             {
                                 // User will be logged in here
                             }

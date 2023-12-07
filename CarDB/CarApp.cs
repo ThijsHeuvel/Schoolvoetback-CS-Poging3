@@ -10,8 +10,7 @@ namespace SimpleCrud
     {
         UserContext userContext;
 
-        public int? sessionId = null;
-        public string? sessionUser = null;
+        public User? sessionUser = null;
 
         public CarApp()
         {
@@ -172,7 +171,7 @@ namespace SimpleCrud
             password = Helpers.HashPassword(password);
             
             User user = new User(username, password);
-            sessionUser = username;
+            sessionUser = user;
             userContext.Users.Add(user);
             userContext.SaveChanges();
         }
@@ -200,8 +199,7 @@ namespace SimpleCrud
                             // Hash and validate password
                             if (Helpers.VerifyPassword(password, item.Password))
                             {
-                                sessionId = item.Id;
-                                sessionUser = item.Username;
+                                sessionUser = item;
                                 Console.WriteLine($"Ingelogd als: {item.Username}");
                                 Console.ReadLine();
                                 break;
@@ -220,7 +218,7 @@ namespace SimpleCrud
             if (sessionUser is not null)
             {
                 Console.WriteLine();
-                Console.WriteLine($"Welkom, {sessionUser}!\n\n========================================\n\n");
+                Console.WriteLine($"Welkom, {sessionUser.Username}!\n\n========================================\n\n");
             }
 
             Console.WriteLine("1. Registreren");

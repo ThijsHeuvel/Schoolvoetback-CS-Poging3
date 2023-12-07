@@ -1,4 +1,6 @@
-﻿namespace CarDB
+﻿using System.ComponentModel;
+
+namespace CarDB
 {
     internal class Helpers
     {
@@ -37,6 +39,11 @@
         internal static string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
+        }
+
+        internal static bool VerifyPassword(string password, string hashedPassword)
+        {
+            return BCrypt.Net.BCrypt.EnhancedVerify(password, hashedPassword);
         }
     }
 }

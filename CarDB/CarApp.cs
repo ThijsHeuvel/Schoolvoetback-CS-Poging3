@@ -10,7 +10,7 @@ namespace SimpleCrud
     {
         UserContext userContext;
 
-        public int? sessionID = null;
+        public int? sessionId = null;
         public string? sessionUser = null;
 
         public CarApp()
@@ -198,12 +198,11 @@ namespace SimpleCrud
                             string password = Helpers.Ask("Wachtwoord:");
 
                             // Hash and validate password
-                            if (Helpers.HashPassword(password) == item.Password)
+                            if (Helpers.VerifyPassword(password, item.Password))
                             {
-                                sessionID = item.Id;
+                                sessionId = item.Id;
                                 sessionUser = item.Username;
-
-                                Console.WriteLine("Ingelogd als:" + item.Username);
+                                Console.WriteLine($"Ingelogd als: {item.Username}");
                                 Console.ReadLine();
                                 break;
                             }
@@ -217,21 +216,19 @@ namespace SimpleCrud
         private string ShowMenu()
         {
             Console.Clear();
+
+            if (sessionUser is not null)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Welkom, {sessionUser}!\n\n========================================\n\n");
+            }
+
             Console.WriteLine("1. Registreren");
             Console.WriteLine("2. Login");
             Console.WriteLine("3. Toon alle wedstrijden");
             Console.WriteLine("X. Verlaten");
-            if (sessionUser is not null)
-            {
-                Console.WriteLine();
-                Console.WriteLine("===========================");
-                Console.WriteLine("Welkom, " + sessionUser);
-            }
 
-
-
-            string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
-            return userInput;
+            return Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
         }
     }
 }

@@ -10,6 +10,9 @@ namespace SimpleCrud
     {
         UserContext userContext;
 
+        public int? sessionID = null;
+        public string? sessionUser = null;
+
         public CarApp()
         {
             userContext = new UserContext();
@@ -169,6 +172,7 @@ namespace SimpleCrud
             password = Helpers.HashPassword(password);
             
             User user = new User(username, password);
+            sessionUser = username;
             userContext.Users.Add(user);
             userContext.SaveChanges();
         }
@@ -196,7 +200,12 @@ namespace SimpleCrud
                             // Hash and validate password
                             if (Helpers.HashPassword(password) == item.Password)
                             {
-                                // User will be logged in here
+                                sessionID = item.Id;
+                                sessionUser = item.Username;
+
+                                Console.WriteLine("Ingelogd als:" + item.Username);
+                                Console.ReadLine();
+                                break;
                             }
                         }
                         break;
@@ -212,6 +221,14 @@ namespace SimpleCrud
             Console.WriteLine("2. Login");
             Console.WriteLine("3. Toon alle wedstrijden");
             Console.WriteLine("X. Verlaten");
+            if (sessionUser is not null)
+            {
+                Console.WriteLine();
+                Console.WriteLine("===========================");
+                Console.WriteLine("Welkom, " + sessionUser);
+            }
+
+
 
             string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
             return userInput;

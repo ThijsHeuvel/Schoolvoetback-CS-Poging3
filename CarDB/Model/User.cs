@@ -21,6 +21,15 @@ namespace CarDB.Model
             Dollars = dollars;
             IsAdmin = isAdmin;
         }
+
+        public User(int id, string username, string password, int dollars, bool isAdmin)
+        {
+            Id = id;
+            Username = username;
+            Password = password;
+            Dollars = dollars;
+            IsAdmin = isAdmin;
+        }
     }
 
 }

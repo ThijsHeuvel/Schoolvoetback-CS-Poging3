@@ -224,6 +224,10 @@ namespace SimpleCrud
             Console.WriteLine("1. Registreren");
             Console.WriteLine("2. Login");
             Console.WriteLine("3. Toon alle wedstrijden");
+            if (sessionUser is not null and sessionUser.IsAdmin)
+            {
+                Console.WriteLine("Admin. Beheerpagina");
+            }
             Console.WriteLine("X. Verlaten");
 
             return Helpers.Ask("Maak uw keuze en druk op <ENTER>.");

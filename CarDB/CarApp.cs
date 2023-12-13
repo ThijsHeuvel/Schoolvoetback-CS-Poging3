@@ -9,7 +9,6 @@ namespace SimpleCrud
     internal class CarApp
     {
         UserContext userContext;
-
         public User? sessionUser = null;
 
         public CarApp()
@@ -43,6 +42,16 @@ namespace SimpleCrud
                 case "3":
                     // Show all
                     // ShowAll();
+                    break;
+                case "admin":
+                    if (sessionUser is not null && sessionUser.IsAdmin)
+                    {
+                        Console.WriteLine("WELKOM ADMIN TEST!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("YOU ARE NOT ADMIN!");
+                    }
                     break;
                 default:
                     // Invalid input
@@ -121,93 +130,79 @@ namespace SimpleCrud
         private void Register()
         {
             Console.Clear();
-            string username = "";
+            string username = Helpers.Ask("Kies uw gebruikersnaam:");
+            bool isUnique = true;
 
-            while (true)
+            foreach (User item in userContext.Users)
             {
-                // Ask for username
-                username = Helpers.Ask("Gebruikersnaam:");
-
-                // Validate username input
-                bool canContinue = true;
-                foreach (User item in userContext.Users)
+                if (item.Username == username)
                 {
-                    if (item.Username == username)
-                    {
-                        Console.WriteLine("Deze gebruikersnaam is al in gebruik!");
-                        canContinue = false;
-                        break;
-                    }
-                }
-
-                // Break if username is unique
-                if (canContinue)
-                {
+                    isUnique = false;
                     break;
                 }
             }
 
-            string password = Helpers.Ask("Wachtwoord:");
-            string repeatedPass = "";
-
-            // Make user repeat password until it matches
+            if (isUnique)
             {
-                bool firstTime = true;
-                while (repeatedPass != password)
+                string password = Helpers.Ask("Vul uw wachtwoord in:");
+                string? repeatedPassword = null;
+
+                while (true)
                 {
-                    if (firstTime)
+                    repeatedPassword = Helpers.Ask("Herhaal uw wachtwoord:");
+                    if (repeatedPassword == password)
                     {
-                        firstTime = false;
+                        break;
                     }
                     else
                     {
                         Console.WriteLine("Wachtwoorden komen niet overeen!");
                     }
-                    repeatedPass = Helpers.Ask("Wachtwoord herhalen:");
                 }
+
+                // Setup User class
+                string hashedPassword = Helpers.HashPassword(password);
+                User user = new User(username, hashedPassword, 50, false);
+                sessionUser = user;
+
+                // Notify user
+                Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}");
+
+                // Save registered user to database
+                userContext.Users.Add(user);
+                userContext.SaveChanges();
             }
-
-            // Hash the password
-            password = Helpers.HashPassword(password);
-
-            User user = new User(username, password, 50, false);
-            sessionUser = user;
-            userContext.Users.Add(user);
-            userContext.SaveChanges();
         }
 
         private void Login()
         {
             Console.Clear();
-            string username = "";
+            string username = Helpers.Ask("Vul uw gebruikersnaam in:");
+            bool foundUsername = false;
 
-            // Check if username is in database
-            while (true)
+            foreach (User item in userContext.Users)
             {
-                // Ask for username
-                username = Helpers.Ask("Gebruikersnaam:");
-
-                // Validate username input
-                foreach (User item in userContext.Users)
+                if (item.Username == username)
                 {
-                    if (item.Username == username)
-                    {
-                        while (true)
-                        {
-                            string password = Helpers.Ask("Wachtwoord:");
+                    foundUsername = true;
+                    string password = Helpers.Ask("Vul uw wachtwoord in:");
 
-                            // Hash and validate password
-                            if (Helpers.VerifyPassword(password, item.Password))
-                            {
-                                sessionUser = item;
-                                Console.WriteLine($"Ingelogd als: {item.Username}");
-                                Console.ReadLine();
-                                break;
-                            }
-                        }
-                        break;
+                    // Validate password
+                    if (Helpers.VerifyPassword(password, item.Password))
+                    {
+                        sessionUser = item;
+                        Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}!");
                     }
+                    else {
+                        Console.WriteLine("Incorrect wachtwoord!");
+                    }
+                    break;
                 }
+            }
+
+            if (!foundUsername)
+            {
+                Console.WriteLine("Geen account gevonden met deze gebruikersnaam!");
             }
         }
 
@@ -217,14 +212,13 @@ namespace SimpleCrud
 
             if (sessionUser is not null)
             {
-                Console.WriteLine();
                 Console.WriteLine($"Welkom, {sessionUser.Username}!\n\n========================================\n\n");
             }
 
             Console.WriteLine("1. Registreren");
             Console.WriteLine("2. Login");
             Console.WriteLine("3. Toon alle wedstrijden");
-            if (sessionUser is not null and sessionUser.IsAdmin)
+            if (sessionUser is not null && sessionUser.IsAdmin)
             {
                 Console.WriteLine("Admin. Beheerpagina");
             }

@@ -11,11 +11,15 @@ namespace CarDB.Model
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public int Dollars { get; set; }
+        public bool IsAdmin { get; set; }
 
-        public User(string username, string password)
+        public User(string username, string password, int dollars, bool isAdmin)
         {
             Username = username;
             Password = password;
+            Dollars = dollars;
+            IsAdmin = isAdmin;
         }
     }
 

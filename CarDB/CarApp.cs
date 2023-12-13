@@ -169,8 +169,8 @@ namespace SimpleCrud
 
             // Hash the password
             password = Helpers.HashPassword(password);
-            
-            User user = new User(username, password);
+
+            User user = new User(username, password, 50, false);
             sessionUser = user;
             userContext.Users.Add(user);
             userContext.SaveChanges();

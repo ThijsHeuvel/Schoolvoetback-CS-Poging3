@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarDB.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20231207082553_UserMigration")]
+    [Migration("20231213125857_UserMigration")]
     partial class UserMigration
     {
         /// <inheritdoc />
@@ -26,6 +26,12 @@ namespace CarDB.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<int>("Dollars")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Password")
                         .IsRequired()

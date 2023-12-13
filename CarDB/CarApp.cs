@@ -209,10 +209,20 @@ namespace SimpleCrud
         private string ShowMenu()
         {
             Console.Clear();
-
             if (sessionUser is not null)
             {
-                Console.WriteLine($"Welkom, {sessionUser.Username}!\n\n========================================\n\n");
+                if (!sessionUser.IsAdmin)
+                {
+                    Console.WriteLine($"Welkom, {sessionUser.Username}!\n${sessionUser.Dollars}\n========================================\n\n");
+                }
+                else
+                {
+                    Console.WriteLine($"Welkom, {sessionUser.Username}! [ADMIN]\n${sessionUser.Dollars}\n========================================\n\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Welkom bij de Gamble App!\n\n========================================\n\n");
             }
 
             Console.WriteLine("1. Registreren");

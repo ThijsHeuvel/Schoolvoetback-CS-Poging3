@@ -11,6 +11,7 @@ namespace CarDB.Data
     internal class UserContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Tournament> Tournaments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

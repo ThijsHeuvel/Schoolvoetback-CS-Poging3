@@ -198,12 +198,24 @@ namespace SimpleCrud
 
         private void ShowTournaments()
         {
-            Console.WriteLine("IMPLEMENT : SHOW TOURNAMENTS");
+            Console.Clear();
+            Console.WriteLine("Actuele wedstrijden:");
+            Console.WriteLine("\n========================================");
+
+            // TODO : LOOP THROUGH TOURNAMENTS HERE
+
+            Console.WriteLine("========================================\n");
+
+            string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
+            switch (userInput)
+            {
+                // TODO : ADD DYNAMIC SWITCHES (using tournaments list)
+            }
         }
 
         private void ShowAdminPage()
         {
-            Console.WriteLine("IMPLEMENT : SHOW ADMIN PAGE");
+            Console.WriteLine("TODO : SHOW ADMIN PAGE");
         }
 
         private string ShowMenu()

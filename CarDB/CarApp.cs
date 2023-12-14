@@ -43,12 +43,12 @@ namespace SimpleCrud
                         Login();
                         break;
                     case "3":
-                        // ShowTournaments();
+                        ShowTournaments();
                         break;
                     case "4":
                         if (isAdmin)
                         {
-                            // ShowAdmin();
+                            ShowAdminPage();
                         }
                         else
                         {
@@ -69,14 +69,12 @@ namespace SimpleCrud
                         LogOut();
                         break;
                     case "2":
-                        // ShowTournaments();
-                        Console.WriteLine("SHOW TOURNAMENTS");
+                        ShowTournaments();
                         break;
                     case "3":
                         if (isAdmin)
                         {
-                            // ShowAdmin();
-                            Console.WriteLine("SHOW ADMIN");
+                            ShowAdminPage();
                         }
                         else
                         {
@@ -196,6 +194,16 @@ namespace SimpleCrud
             sessionUser = user;
             isLoggedIn = true;
             isAdmin = user.IsAdmin;
+        }
+
+        private void ShowTournaments()
+        {
+            Console.WriteLine("IMPLEMENT : SHOW TOURNAMENTS");
+        }
+
+        private void ShowAdminPage()
+        {
+            Console.WriteLine("IMPLEMENT : SHOW ADMIN PAGE");
         }
 
         private string ShowMenu()

@@ -222,8 +222,7 @@ namespace SimpleCrud
             Console.WriteLine("========================================\n");
 
             // Await user input
-            int selectedTournamentIndex;
-            int.TryParse(Helpers.Ask("Maak uw keuze en druk op <ENTER>."), out selectedTournamentIndex);
+            int selectedTournamentIndex = Helpers.AskForInt("Maak uw keuze en druk op <ENTER>.");
 
             foreach (Tournament tournament in tournaments)
             {
@@ -256,11 +255,27 @@ namespace SimpleCrud
 
             Console.WriteLine("Op welk team wilt u gokken?\n");
 
+            int selectedTeamIndex = Helpers.AskForInt("Maak uw keuze en druk op <ENTER>.");
+            string selectedTeamName = (selectedTeamIndex == 1) ? tournament.Team1 : tournament.Team2;
+            ShowSelectedTeamMenu(tournament, selectedTeamName);
+        }
+
+        private void ShowSelectedTeamMenu(Tournament tournament, string teamName)
+        {
+            Console.Clear();
+            DisplayTournamentInfo(tournament);
+
+            Console.WriteLine($"\n{teamName}");
+
+            Console.WriteLine("\n========================================");
+            Console.WriteLine("1 | Speler");
+            Console.WriteLine("2 | Eindscore");
+            Console.WriteLine("X | Ga terug");
+            Console.WriteLine("========================================\n");
+
+            Console.WriteLine("Waarop wilt u gokken?\n");
+
             string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
-            switch (userInput)
-            {
-                // TODO : IMPLEMENT SWITCHES
-            }
         }
 
         private void ShowAdminPage()

@@ -1,6 +1,7 @@
 ﻿using CarDB;
 using CarDB.Data;
 using CarDB.Model;
+using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -10,6 +11,8 @@ namespace SimpleCrud
     {
         UserContext userContext;
         public User? sessionUser = null;
+        public bool isLoggedIn = false;
+        public bool isAdmin = false;
 
         public CarApp()
         {
@@ -29,34 +32,64 @@ namespace SimpleCrud
 
         private void handleUserInput(string userInput)
         {
-            switch (userInput)
+            // WHEN *NOT* LOGGED IN
+            if (!isLoggedIn)
             {
-                case "1":
-                    // Register
-                    Register();
-                    break;
-                case "2":
-                    // Login
-                    Login();
-                    break;
-                case "3":
-                    // Show all
-                    // ShowAll();
-                    break;
-                case "admin":
-                    if (sessionUser is not null && sessionUser.IsAdmin)
-                    {
-                        Console.WriteLine("WELKOM ADMIN TEST!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("YOU ARE NOT ADMIN!");
-                    }
-                    break;
-                default:
-                    // Invalid input
-                    Console.WriteLine("Incorrect choice...");
-                    break;
+                switch (userInput)
+                {
+                    case "1":
+                        Register();
+                        break;
+                    case "2":
+                        Login();
+                        break;
+                    case "3":
+                        // ShowTournaments();
+                        break;
+                    case "4":
+                        if (isAdmin)
+                        {
+                            // ShowAdmin();
+                        }
+                        else
+                        {
+                            Console.WriteLine("YOU ARE NOT ADMIN!");
+                        }
+                        break;
+                    default:
+                        // Invalid input
+                        Console.WriteLine("Incorrect choice...");
+                        break;
+                }
+            }
+            // WHEN LOGGED IN
+            else
+            {
+                switch (userInput)
+                {
+                    case "1":
+                        LogOut();
+                        break;
+                    case "2":
+                        // ShowTournaments();
+                        Console.WriteLine("SHOW TOURNAMENTS");
+                        break;
+                    case "3":
+                        if (isAdmin)
+                        {
+                            // ShowAdmin();
+                            Console.WriteLine("SHOW ADMIN");
+                        }
+                        else
+                        {
+                            Console.WriteLine("YOU ARE NOT ADMIN!");
+                        }
+                        break;
+                    default:
+                        // Invalid input
+                        Console.WriteLine("Incorrect choice...");
+                        break;
+                }
             }
             Helpers.Pause();
         }
@@ -175,7 +208,7 @@ namespace SimpleCrud
             // Setup User class
             string hashedPassword = Helpers.HashPassword(password);
             User user = new User(username, hashedPassword, 50, false);
-            sessionUser = user;
+            SetSessionUser(user);
 
             // Notify user
             Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}");
@@ -201,7 +234,7 @@ namespace SimpleCrud
                     // Validate password
                     if (Helpers.VerifyPassword(password, item.Password))
                     {
-                        sessionUser = item;
+                        SetSessionUser(item);
                         Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}!");
                     }
                     else {
@@ -217,34 +250,65 @@ namespace SimpleCrud
             }
         }
 
+        private void LogOut()
+        {
+            sessionUser = null;
+            isLoggedIn = false;
+            isAdmin = false;
+
+            Console.Clear();
+            Console.WriteLine("U bent nu uitgelogd.");
+        }
+
+        private void SetSessionUser(User user)
+        {
+            sessionUser = user;
+            isLoggedIn = true;
+            isAdmin = sessionUser.IsAdmin;
+        }
+
         private string ShowMenu()
         {
+            // Menu user display
             Console.Clear();
-            if (sessionUser is not null)
+            if (isLoggedIn)
             {
-                if (!sessionUser.IsAdmin)
-                {
-                    Console.WriteLine($"Welkom, {sessionUser.Username}!\n${sessionUser.Dollars}\n========================================\n\n");
-                }
-                else
-                {
-                    Console.WriteLine($"Welkom, {sessionUser.Username}! [ADMIN]\n${sessionUser.Dollars}\n========================================\n\n");
-                }
+
+                Console.WriteLine($"Welkom, {sessionUser.Username}! [ADMIN]");
+                Console.WriteLine($"{sessionUser.Dollars}");
             }
             else
             {
-                Console.WriteLine("Welkom bij de Gamble App!\n\n========================================\n");
+                Console.WriteLine("Welkom bij de Gamble App!");
+            }
+            Console.WriteLine("\n========================================");
+
+            // Populate menu options
+            List<string> menuOptions = new List<string>();
+            if (!isLoggedIn)
+            {
+                menuOptions.Add("Registreren");
+                menuOptions.Add("Login");
+            }
+            else
+            {
+                menuOptions.Add("Uitloggen");
+            }
+            menuOptions.Add("Toon geplande wedstrijden");
+            if (isAdmin)
+            {
+                menuOptions.Add("Beheerpagina [ADMIN-ONLY]");
             }
 
-            // Menu options
-            Console.WriteLine("1. Registreren");
-            Console.WriteLine("2. Login");
-            Console.WriteLine("3. Toon geplande wedstrijden");
-            if (sessionUser is not null && sessionUser.IsAdmin)
+            // Display menu options
+            for (int i = 0; i < menuOptions.Count; i++)
             {
-                Console.WriteLine("4. Beheerpagina [ADMIN-ONLY]");
+                Console.WriteLine($"{i + 1} | {menuOptions[i]}");
             }
-            Console.WriteLine("X. Verlaten");
+            Console.WriteLine("X | Verlaten");
+
+            // Display divider
+            Console.WriteLine("========================================\n");
 
             return Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
         }

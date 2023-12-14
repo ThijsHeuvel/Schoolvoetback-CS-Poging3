@@ -236,12 +236,13 @@ namespace SimpleCrud
                 Console.WriteLine("Welkom bij de Gamble App!\n\n========================================\n");
             }
 
+            // Menu options
             Console.WriteLine("1. Registreren");
             Console.WriteLine("2. Login");
-            Console.WriteLine("3. Toon alle wedstrijden");
+            Console.WriteLine("3. Toon geplande wedstrijden");
             if (sessionUser is not null && sessionUser.IsAdmin)
             {
-                Console.WriteLine("Admin. Beheerpagina");
+                Console.WriteLine("4. Beheerpagina [ADMIN-ONLY]");
             }
             Console.WriteLine("X. Verlaten");
 

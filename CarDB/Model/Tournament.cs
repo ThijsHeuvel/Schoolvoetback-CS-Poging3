@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +14,9 @@ namespace CarDB.Model
         public string? Description { get; set; }
         public string Team1 { get; set; }
         public string Team2 { get; set; }
+        //public string Location { get; set; }
         public DateTime Start_time { get; set; }
         public DateTime End_time { get; set; }
-
 
         public Tournament(int id, string name, string? description, string team1, string team2, DateTime start_time, DateTime end_time)
         {
@@ -24,6 +25,7 @@ namespace CarDB.Model
             Description = description;
             Team1 = team1;
             Team2 = team2;
+            //Location = location;
             Start_time = start_time;
             End_time = end_time;
         }
@@ -33,6 +35,4 @@ namespace CarDB.Model
             return $"{Id} || {Name} || {Team1} - {Team2} || {Start_time} t/m {End_time} ";
         }
     }
-
-
 }

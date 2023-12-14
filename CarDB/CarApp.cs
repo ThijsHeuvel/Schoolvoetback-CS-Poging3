@@ -198,18 +198,68 @@ namespace SimpleCrud
 
         private void ShowTournaments()
         {
+            // Load screen
+            Console.Clear();
+            Console.WriteLine("Aan het laden...");
+
+            // Populate list with tournaments
+            List<Tournament> tournaments = new List<Tournament>();
+            foreach (Tournament tournament in userContext.Tournaments)
+            {
+                tournaments.Add(tournament);
+            }
+
+            // Display tournaments
             Console.Clear();
             Console.WriteLine("Actuele wedstrijden:");
             Console.WriteLine("\n========================================");
 
-            // TODO : LOOP THROUGH TOURNAMENTS HERE
+            foreach (Tournament tournament in tournaments)
+            {
+                Console.WriteLine($"{tournament.Id} | {tournament.Name} | {tournament.Team1} - {tournament.Team2} | LOCATION | {tournament.Start_time} - {tournament.End_time}");
+            }
 
             Console.WriteLine("========================================\n");
+
+            // Await user input
+            int selectedTournamentIndex;
+            int.TryParse(Helpers.Ask("Maak uw keuze en druk op <ENTER>."), out selectedTournamentIndex);
+
+            foreach (Tournament tournament in tournaments)
+            {
+                if (tournament.Id == selectedTournamentIndex)
+                {
+                    ShowTournamentMenu(tournament);
+                    break;
+                }
+            }
+        }
+
+        private void DisplayTournamentInfo(Tournament tournament)
+        {
+            Console.WriteLine($"Westrijd {tournament.Id}");
+            Console.WriteLine(tournament.Name);
+            Console.WriteLine($"{tournament.Team1} - {tournament.Team2}");
+            //Console.WriteLine(tournament.Location);
+            Console.WriteLine($"{tournament.Start_time} - {tournament.End_time}");
+        }
+
+        private void ShowTournamentMenu(Tournament tournament)
+        {
+            Console.Clear();
+            DisplayTournamentInfo(tournament);
+
+            Console.WriteLine("\n========================================");
+            Console.WriteLine($"1 | {tournament.Team1}");
+            Console.WriteLine($"2 | {tournament.Team2}");
+            Console.WriteLine("========================================\n");
+
+            Console.WriteLine("Op welk team wilt u gokken?\n");
 
             string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
             switch (userInput)
             {
-                // TODO : ADD DYNAMIC SWITCHES (using tournaments list)
+                // TODO : IMPLEMENT SWITCHES
             }
         }
 

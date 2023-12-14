@@ -10,14 +10,14 @@ namespace CarDB.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public string Team1 { get; set; }
         public string Team2 { get; set; }
         public DateTime Start_time { get; set; }
         public DateTime End_time { get; set; }
 
 
-        public Tournament(int id, string name, string description, string team1, string team2, DateTime start_time, DateTime end_time)
+        public Tournament(int id, string name, string? description, string team1, string team2, DateTime start_time, DateTime end_time)
         {
             Id = id;
             Name = name;

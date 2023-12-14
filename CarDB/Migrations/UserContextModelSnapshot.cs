@@ -26,7 +26,6 @@ namespace CarDB.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("End_time")

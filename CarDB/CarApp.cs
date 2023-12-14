@@ -130,48 +130,59 @@ namespace SimpleCrud
         private void Register()
         {
             Console.Clear();
-            string username = Helpers.Ask("Kies uw gebruikersnaam:");
-            bool isUnique = true;
-
-            foreach (User item in userContext.Users)
+            string? username = null;
+            while (true)
             {
-                if (item.Username == username)
-                {
-                    isUnique = false;
-                    break;
-                }
-            }
+                username = Helpers.Ask("Kies uw gebruikersnaam:");
+                bool isUnique = true;
 
-            if (isUnique)
-            {
-                string password = Helpers.Ask("Vul uw wachtwoord in:");
-                string? repeatedPassword = null;
-
-                while (true)
+                foreach (User item in userContext.Users)
                 {
-                    repeatedPassword = Helpers.Ask("Herhaal uw wachtwoord:");
-                    if (repeatedPassword == password)
+                    if (item.Username.ToLower() == username.ToLower())
                     {
+                        isUnique = false;
                         break;
                     }
-                    else
-                    {
-                        Console.WriteLine("Wachtwoorden komen niet overeen!");
-                    }
                 }
 
-                // Setup User class
-                string hashedPassword = Helpers.HashPassword(password);
-                User user = new User(username, hashedPassword, 50, false);
-                sessionUser = user;
-
-                // Notify user
-                Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}");
-
-                // Save registered user to database
-                userContext.Users.Add(user);
-                userContext.SaveChanges();
+                if (isUnique)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Er bestaat al een account met deze gebruikersnaam");
+                }
             }
+
+            Console.Clear();
+            string password = Helpers.Ask("Vul uw wachtwoord in:");
+            string? repeatedPassword = null;
+
+            while (true)
+            {
+                repeatedPassword = Helpers.Ask("Herhaal uw wachtwoord:");
+                if (repeatedPassword == password)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Wachtwoorden komen niet overeen!");
+                }
+            }
+
+            // Setup User class
+            string hashedPassword = Helpers.HashPassword(password);
+            User user = new User(username, hashedPassword, 50, false);
+            sessionUser = user;
+
+            // Notify user
+            Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}");
+
+            // Save registered user to database
+            userContext.Users.Add(user);
+            userContext.SaveChanges();
         }
 
         private void Login()
@@ -182,7 +193,7 @@ namespace SimpleCrud
 
             foreach (User item in userContext.Users)
             {
-                if (item.Username == username)
+                if (item.Username.ToLower() == username.ToLower())
                 {
                     foundUsername = true;
                     string password = Helpers.Ask("Vul uw wachtwoord in:");

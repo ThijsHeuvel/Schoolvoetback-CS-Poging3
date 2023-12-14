@@ -233,7 +233,7 @@ namespace SimpleCrud
             }
             else
             {
-                Console.WriteLine("Welkom bij de Gamble App!\n\n========================================\n\n");
+                Console.WriteLine("Welkom bij de Gamble App!\n\n========================================\n");
             }
 
             Console.WriteLine("1. Registreren");

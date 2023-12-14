@@ -32,7 +32,6 @@ namespace SimpleCrud
 
         private void handleUserInput(string userInput)
         {
-            // WHEN *NOT* LOGGED IN
             if (!isLoggedIn)
             {
                 switch (userInput)
@@ -62,7 +61,6 @@ namespace SimpleCrud
                         break;
                 }
             }
-            // WHEN LOGGED IN
             else
             {
                 switch (userInput)
@@ -94,72 +92,6 @@ namespace SimpleCrud
             Helpers.Pause();
         }
 
-        /*private void Delete()
-        {
-            Car car = SelectCar();
-            dataContext.Cars.Remove(car);
-
-            dataContext.SaveChanges();
-            Console.WriteLine("Car Deleted.");
-
-        }
-
-        private void AddNew()
-        {
-
-            string brand = Helpers.Ask("Brand car:");
-            string model = Helpers.Ask("Model car:");
-            int year = Helpers.AskForInt("Year car:");
-            string color = Helpers.Ask("Color car:");
-            Car car = new Car(brand, model, year, color);
-            dataContext.Cars.Add(car);
-            dataContext.SaveChanges();
-
-            Console.WriteLine("Car Added.");
-        }
-
-        private Car SelectCar()
-        {
-            ShowAll();
-            Car? selectedCar = null;
-
-            while (selectedCar == null)
-            {
-                int id = Helpers.AskForInt("Select ID Car.");
-                selectedCar = dataContext.Cars.Find(id);
-            }
-
-            return selectedCar;
-
-
-        }
-
-        private void ShowAll()
-        {
-                               
-            Console.WriteLine("================ All Cars ================");
-            List<Car> cars = dataContext.Cars.ToList();
-
-            foreach (Car car in dataContext.Cars)
-            {
-                Console.WriteLine(car);
-            }
-            Console.WriteLine("=============================================");
-        }
-
-        private void UpdateCar()
-        {
-            Car car = SelectCar();
-            car.Brand = Helpers.Ask("New Brand car:");
-            car.Model = Helpers.Ask("New Model car:");
-            car.Year = Helpers.AskForInt("New Year car:");
-            car.Color = Helpers.Ask("New Color car:");
-            dataContext.Cars.Update(car);
-            dataContext.SaveChanges();
-
-        }*/
-
-        // Methods used for Gamble App
         private void Register()
         {
             Console.Clear();
@@ -255,7 +187,6 @@ namespace SimpleCrud
             sessionUser = null;
             isLoggedIn = false;
             isAdmin = false;
-
             Console.Clear();
             Console.WriteLine("U bent nu uitgelogd.");
         }
@@ -264,7 +195,7 @@ namespace SimpleCrud
         {
             sessionUser = user;
             isLoggedIn = true;
-            isAdmin = sessionUser.IsAdmin;
+            isAdmin = user.IsAdmin;
         }
 
         private string ShowMenu()
@@ -273,9 +204,9 @@ namespace SimpleCrud
             Console.Clear();
             if (isLoggedIn)
             {
-
-                Console.WriteLine($"Welkom, {sessionUser.Username}! [ADMIN]");
-                Console.WriteLine($"{sessionUser.Dollars}");
+                string accountExtension = isAdmin ? "[Admin]" : "";
+                Console.WriteLine($"Welkom, {sessionUser.Username}! {accountExtension}");
+                Console.WriteLine($"Balans: ${sessionUser.Dollars}");
             }
             else
             {
@@ -283,24 +214,24 @@ namespace SimpleCrud
             }
             Console.WriteLine("\n========================================");
 
-            // Populate menu options
+            // Display menu
             List<string> menuOptions = new List<string>();
             if (!isLoggedIn)
             {
                 menuOptions.Add("Registreren");
-                menuOptions.Add("Login");
+                menuOptions.Add("Inloggen");
+                menuOptions.Add("Toon wedstrijden");
             }
             else
             {
                 menuOptions.Add("Uitloggen");
-            }
-            menuOptions.Add("Toon geplande wedstrijden");
-            if (isAdmin)
-            {
-                menuOptions.Add("Beheerpagina [ADMIN-ONLY]");
+                menuOptions.Add("Toon wedstrijden");
+                if (isAdmin)
+                {
+                    menuOptions.Add("Beheerpagina [Admin]");
+                }
             }
 
-            // Display menu options
             for (int i = 0; i < menuOptions.Count; i++)
             {
                 Console.WriteLine($"{i + 1} | {menuOptions[i]}");

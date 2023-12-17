@@ -8,6 +8,7 @@ namespace CarDB
 {
     internal class Styling
     {
+        private static ConsoleColor DefaultColor = ConsoleColor.White;
         private static ConsoleColor LineColor = ConsoleColor.Blue;
 
         private static void SetColor(ConsoleColor color)
@@ -17,7 +18,7 @@ namespace CarDB
 
         private static void ResetColor()
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = DefaultColor;
         }
 
         public static void SkipLine()

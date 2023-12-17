@@ -292,12 +292,13 @@ namespace SimpleCrud
             {
                 string accountExtension = isAdmin ? "[Admin]" : "";
                 Console.WriteLine($"Welkom, {sessionUser.Username}! {accountExtension}");
-                Console.WriteLine($"Balans: ${sessionUser.Dollars}");
+                Styling.ShowBalance(sessionUser);
             }
             else
             {
-                Console.WriteLine("Welkom bij de Gamble App!\n");
+                Console.WriteLine("Welkom bij de Gamble App!");
             }
+            Styling.SkipLine();
             Styling.AddLine();
 
             // Display menu

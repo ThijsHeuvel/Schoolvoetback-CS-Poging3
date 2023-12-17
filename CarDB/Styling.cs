@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarDB.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace CarDB
     {
         private static ConsoleColor DefaultColor = ConsoleColor.White;
         private static ConsoleColor LineColor = ConsoleColor.Blue;
+        private static ConsoleColor BalanceColor = ConsoleColor.Green;
 
         private static void SetColor(ConsoleColor color)
         {
@@ -30,6 +32,13 @@ namespace CarDB
         {
             SetColor(LineColor);
             Console.WriteLine("========================================");
+            ResetColor();
+        }
+
+        public static void ShowBalance(User user)
+        {
+            SetColor(BalanceColor);
+            Console.WriteLine($"Balans: ${user.Dollars}");
             ResetColor();
         }
     }

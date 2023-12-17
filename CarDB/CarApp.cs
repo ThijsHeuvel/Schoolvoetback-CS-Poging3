@@ -211,18 +211,18 @@ namespace SimpleCrud
 
             // Display tournaments
             Console.Clear();
-            Console.WriteLine("Actuele wedstrijden:");
-            Console.WriteLine("\n========================================");
+            Console.WriteLine("Actuele wedstrijden:\n");
+            Styling.AddLine();
 
             foreach (Tournament tournament in tournaments)
             {
                 Console.WriteLine($"{tournament.Id} | {tournament.Name} | {tournament.Team1} - {tournament.Team2} | LOCATION | {tournament.Start_time} - {tournament.End_time}");
             }
 
-            Console.WriteLine("========================================\n");
+            Styling.AddLine();
 
             // Await user input
-            int selectedTournamentIndex = Helpers.AskForInt("Maak uw keuze en druk op <ENTER>.");
+            int selectedTournamentIndex = Helpers.AskForInt("\nMaak uw keuze en druk op <ENTER>.");
 
             foreach (Tournament tournament in tournaments)
             {
@@ -247,13 +247,14 @@ namespace SimpleCrud
         {
             Console.Clear();
             DisplayTournamentInfo(tournament);
+            Styling.SkipLine();
 
-            Console.WriteLine("\n========================================");
+            Styling.AddLine();
             Console.WriteLine($"1 | {tournament.Team1}");
             Console.WriteLine($"2 | {tournament.Team2}");
-            Console.WriteLine("========================================\n");
+            Styling.AddLine();
 
-            Console.WriteLine("Op welk team wilt u gokken?\n");
+            Console.WriteLine("\nOp welk team wilt u gokken?\n");
 
             int selectedTeamIndex = Helpers.AskForInt("Maak uw keuze en druk op <ENTER>.");
             string selectedTeamName = (selectedTeamIndex == 1) ? tournament.Team1 : tournament.Team2;
@@ -267,13 +268,13 @@ namespace SimpleCrud
 
             Console.WriteLine($"\n{teamName}");
 
-            Console.WriteLine("\n========================================");
+            Styling.AddLine();
             Console.WriteLine("1 | Speler");
             Console.WriteLine("2 | Eindscore");
             Console.WriteLine("X | Ga terug");
-            Console.WriteLine("========================================\n");
+            Styling.AddLine();
 
-            Console.WriteLine("Waarop wilt u gokken?\n");
+            Console.WriteLine("\nWaarop wilt u gokken?\n");
 
             string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
         }
@@ -295,9 +296,9 @@ namespace SimpleCrud
             }
             else
             {
-                Console.WriteLine("Welkom bij de Gamble App!");
+                Console.WriteLine("Welkom bij de Gamble App!\n");
             }
-            Console.WriteLine("\n========================================");
+            Styling.AddLine();
 
             // Display menu
             List<string> menuOptions = new List<string>();
@@ -322,11 +323,9 @@ namespace SimpleCrud
                 Console.WriteLine($"{i + 1} | {menuOptions[i]}");
             }
             Console.WriteLine("X | Verlaten");
+            Styling.AddLine();
 
-            // Display divider
-            Console.WriteLine("========================================\n");
-
-            return Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
+            return Helpers.Ask("\nMaak uw keuze en druk op <ENTER>.");
         }
     }
 }

@@ -1,7 +1,12 @@
 ﻿using CarDB;
 using CarDB.Data;
 using CarDB.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore.Query;
+using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -17,6 +22,17 @@ namespace SimpleCrud
         public CarApp()
         {
             userContext = new UserContext();
+
+            // Test data
+            if (userContext.Tournaments.Count() == 0)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Tournament tournament = new Tournament($"Tournament {i + 1}", "Description", "Team1", "Team2", DateTime.Now, DateTime.Now.AddHours(1));
+                    userContext.Tournaments.Add(tournament);
+                }
+                userContext.SaveChanges();
+            }
         }
 
         internal void Run()
@@ -93,6 +109,8 @@ namespace SimpleCrud
         private void Register()
         {
             Console.Clear();
+            Styling.AddHeader("Registreren");
+
             string? username = null;
             while (true)
             {
@@ -114,7 +132,7 @@ namespace SimpleCrud
                 }
                 else
                 {
-                    Console.WriteLine("Er bestaat al een account met deze gebruikersnaam");
+                    Styling.ShowError("\nGebruikersnaam is al in gebruik!\n");
                 }
             }
 
@@ -131,7 +149,7 @@ namespace SimpleCrud
                 }
                 else
                 {
-                    Console.WriteLine("Wachtwoorden komen niet overeen!");
+                    Styling.ShowError("\nWachtwoorden komen niet overeen!\n");
                 }
             }
 
@@ -141,7 +159,7 @@ namespace SimpleCrud
             SetSessionUser(user);
 
             // Notify user
-            Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}");
+            Styling.ShowInfo($"\nU bent nu ingelogd als {user.Username}!\n");
 
             // Save registered user to database
             userContext.Users.Add(user);
@@ -151,9 +169,10 @@ namespace SimpleCrud
         private void Login()
         {
             Console.Clear();
+            Styling.AddHeader("Inloggen");
+
             string username = Helpers.Ask("Vul uw gebruikersnaam in:");
             bool foundUsername = false;
-
             foreach (User item in userContext.Users)
             {
                 if (item.Username.ToLower() == username.ToLower())
@@ -165,10 +184,11 @@ namespace SimpleCrud
                     if (Helpers.VerifyPassword(password, item.Password))
                     {
                         SetSessionUser(item);
-                        Console.WriteLine($"U bent nu ingelogd als {sessionUser.Username}!");
+                        Styling.ShowInfo($"\nU bent nu ingelogd als {item.Username}!\n");
                     }
-                    else {
-                        Console.WriteLine("Incorrect wachtwoord!");
+                    else
+                    {
+                        Styling.ShowError("\nWachtwoord is onjuist!\n");
                     }
                     break;
                 }
@@ -176,7 +196,7 @@ namespace SimpleCrud
 
             if (!foundUsername)
             {
-                Console.WriteLine("Geen account gevonden met deze gebruikersnaam!");
+                Styling.ShowError("\nGebruikersnaam niet gevonden!\n");
             }
         }
 
@@ -216,67 +236,163 @@ namespace SimpleCrud
 
             foreach (Tournament tournament in tournaments)
             {
-                Console.WriteLine($"{tournament.Id} | {tournament.Name} | {tournament.Team1} - {tournament.Team2} | LOCATION | {tournament.Start_time} - {tournament.End_time}");
+                int id = tournament.Id;
+                string name = tournament.Name;
+                string team1 = tournament.Team1;
+                string team2 = tournament.Team2;
+                //string location = tournament.Location;
+                string start_time = tournament.Start_time.ToString("HH:mm");
+                string end_time = tournament.End_time.ToString("HH:mm");
+
+                Styling.AddListOption($"{id} | {name} | {team1} - {team2} | LOCATION | {start_time} - {end_time}");
             }
+            Styling.AddListOption("X | Ga terug");
 
             Styling.AddLine();
 
             // Await user input
-            int selectedTournamentIndex = Helpers.AskForInt("\nMaak uw keuze en druk op <ENTER>.");
-
-            foreach (Tournament tournament in tournaments)
+            string userInput = Helpers.Ask("\nMaak uw keuze en druk op <ENTER>.");
+            if (int.TryParse(userInput, out int result))
             {
-                if (tournament.Id == selectedTournamentIndex)
+                Tournament? selectedTournament = null;
+                foreach (Tournament tournament in tournaments)
                 {
-                    ShowTournamentMenu(tournament);
-                    break;
+                    if (tournament.Id == result)
+                    {
+                        selectedTournament = tournament;
+                        break;
+                    }
+                }
+                if (selectedTournament is not null)
+                {
+                    if (isLoggedIn)
+                    {
+                        ShowTournamentMenu(selectedTournament);
+                    }
+                    else
+                    {
+                        Styling.ShowError("\nU moet ingelogd zijn om te kunnen gokken!\n");
+                    }
                 }
             }
         }
 
         private void DisplayTournamentInfo(Tournament tournament)
         {
-            Console.WriteLine($"Westrijd {tournament.Id}");
-            Console.WriteLine(tournament.Name);
-            Console.WriteLine($"{tournament.Team1} - {tournament.Team2}");
-            //Console.WriteLine(tournament.Location);
-            Console.WriteLine($"{tournament.Start_time} - {tournament.End_time}");
+            Styling.ShowInfo($"Wedstrijd id: {tournament.Id}");
+            Styling.ShowInfo(tournament.Name);
+            Styling.ShowInfo($"{tournament.Team1} - {tournament.Team2}");
+            Styling.ShowInfo("LOCATION");
+
+            string startTime = tournament.Start_time.ToString("HH:mm");
+            string endTime = tournament.End_time.ToString("HH:mm");
+            Styling.ShowInfo($"{startTime} - {endTime}");
         }
 
         private void ShowTournamentMenu(Tournament tournament)
         {
             Console.Clear();
             DisplayTournamentInfo(tournament);
+            
             Styling.SkipLine();
 
             Styling.AddLine();
-            Console.WriteLine($"1 | {tournament.Team1}");
-            Console.WriteLine($"2 | {tournament.Team2}");
+            Styling.AddListOption($"1 | {tournament.Team1}");
+            Styling.AddListOption($"2 | {tournament.Team2}");
+            Styling.AddListOption("X | Ga terug");
             Styling.AddLine();
 
             Console.WriteLine("\nOp welk team wilt u gokken?\n");
 
-            int selectedTeamIndex = Helpers.AskForInt("Maak uw keuze en druk op <ENTER>.");
-            string selectedTeamName = (selectedTeamIndex == 1) ? tournament.Team1 : tournament.Team2;
-            ShowSelectedTeamMenu(tournament, selectedTeamName);
+            // Check user input
+            string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
+            if (userInput == "1" || userInput == "2")
+            {
+                int selectedTeamIndex = int.Parse(userInput);
+                ShowSelectedTeamMenu(tournament, selectedTeamIndex);
+            }
+            else
+            {
+                // Go back one step
+                ShowTournaments();
+            }
         }
 
-        private void ShowSelectedTeamMenu(Tournament tournament, string teamName)
+        private void ShowSelectedTeamMenu(Tournament tournament, int teamIndex)
         {
             Console.Clear();
             DisplayTournamentInfo(tournament);
 
+            string teamName = (teamIndex == 1) ? tournament.Team1 : tournament.Team2;
             Console.WriteLine($"\n{teamName}");
 
+            Styling.SkipLine();
+
             Styling.AddLine();
-            Console.WriteLine("1 | Speler");
-            Console.WriteLine("2 | Eindscore");
-            Console.WriteLine("X | Ga terug");
+            Styling.AddListOption("1 | Speler");
+            Styling.AddListOption("2 | Eindscore");
+            Styling.AddListOption("X | Ga terug");
             Styling.AddLine();
 
             Console.WriteLine("\nWaarop wilt u gokken?\n");
 
             string userInput = Helpers.Ask("Maak uw keuze en druk op <ENTER>.");
+            switch (userInput)
+            {
+                case "1":
+                    ShowPlayerMenu(tournament, teamIndex);
+                    break;
+                case "2":
+                    ShowScoreMenu(tournament, teamIndex);
+                    break;
+                default:
+                    // Go back one step
+                    ShowTournamentMenu(tournament);
+                    break;
+            }
+        }
+
+        private void ShowPlayerMenu(Tournament tournament, int teamIndex)
+        {
+            Console.Clear();
+            DisplayTournamentInfo(tournament);
+
+            string teamName = (teamIndex == 1) ? tournament.Team1 : tournament.Team2;
+            Console.WriteLine($"\n{teamName}");
+
+            Styling.SkipLine();
+
+            Styling.AddLine();
+            Styling.AddLine();
+        }
+
+        private void ShowScoreMenu(Tournament tournament, int teamIndex)
+        {
+            Console.Clear();
+            DisplayTournamentInfo(tournament);
+
+            string teamName = (teamIndex == 1) ? tournament.Team1 : tournament.Team2;
+            Console.WriteLine($"\n{teamName}");
+
+            Styling.SkipLine();
+
+            Styling.AddLine();
+
+            Styling.SkipLine();
+
+            int userScoreInput;
+            while (true)
+            {
+                userScoreInput = Helpers.AskForInt("Welke score denkt u dat het team gaat halen?");
+                if (userScoreInput >= 0)
+                {
+                    break;
+                }
+                else
+                {
+                    Styling.ShowError("\nScore moet positief zijn!\n");
+                }
+            }
         }
 
         private void ShowAdminPage()
@@ -299,6 +415,7 @@ namespace SimpleCrud
                 Console.WriteLine("Welkom bij de Gamble App!");
             }
             Styling.SkipLine();
+
             Styling.AddLine();
 
             // Display menu
@@ -321,9 +438,9 @@ namespace SimpleCrud
 
             for (int i = 0; i < menuOptions.Count; i++)
             {
-                Console.WriteLine($"{i + 1} | {menuOptions[i]}");
+                Styling.AddListOption($"{i + 1} | {menuOptions[i]}");
             }
-            Console.WriteLine("X | Verlaten");
+            Styling.AddListOption("X | Verlaten");
             Styling.AddLine();
 
             return Helpers.Ask("\nMaak uw keuze en druk op <ENTER>.");

@@ -18,6 +18,17 @@ namespace CarDB.Model
         public DateTime Start_time { get; set; }
         public DateTime End_time { get; set; }
 
+        public Tournament(string name, string? description, string team1, string team2, DateTime start_time, DateTime end_time)
+        {
+            Name = name;
+            Description = description;
+            Team1 = team1;
+            Team2 = team2;
+            //Location = location;
+            Start_time = start_time;
+            End_time = end_time;
+        }
+
         public Tournament(int id, string name, string? description, string team1, string team2, DateTime start_time, DateTime end_time)
         {
             Id = id;
@@ -32,7 +43,7 @@ namespace CarDB.Model
 
         public override string ToString()
         {
-            return $"{Id} || {Name} || {Team1} - {Team2} || {Start_time} t/m {End_time} ";
+            return $"{Id} | {Name} | {Team1} - {Team2} | {Start_time} - {End_time}";
         }
     }
 }

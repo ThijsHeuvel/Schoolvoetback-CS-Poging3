@@ -12,14 +12,14 @@ using System.Runtime.CompilerServices;
 
 namespace SimpleCrud
 {
-    internal class CarApp
+    internal class GambleApp
     {
         UserContext userContext;
         public User? sessionUser = null;
         public bool isLoggedIn = false;
         public bool isAdmin = false;
 
-        public CarApp()
+        public GambleApp()
         {
             userContext = new UserContext();
 

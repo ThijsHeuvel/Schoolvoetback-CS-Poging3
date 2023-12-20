@@ -8,10 +8,11 @@ namespace CarDB
 {
     internal class Admin
     {
+        static string userKey = "D295372"; // Unique key for retrieving tournament data
+
         public static void ShowMatches()
         {
-            // TODO: Show matches
-            Console.WriteLine("Show matches");
+            string response = Http.GetUrl($"api/matches.php?key={userKey}");
         }
 
         public static void ShowMatchResults()

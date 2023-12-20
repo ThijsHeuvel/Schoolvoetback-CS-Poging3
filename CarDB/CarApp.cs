@@ -410,25 +410,15 @@ namespace SimpleCrud
             switch (userInput)
             {
                 case "1":
-                    ShowMatches();
+                    Admin.ShowMatches();
                     break;
                 case "2":
-                    ShowMatchResults();
+                    Admin.ShowMatchResults();
                     break;
                 default:
                     ShowMenu();
                     break;
             }
-        }
-
-        private void ShowMatches()
-        {
-            // TODO: Show matches
-        }
-
-        private void ShowMatchResults()
-        {
-            // TODO: Show match results
         }
 
         private string ShowMenu()

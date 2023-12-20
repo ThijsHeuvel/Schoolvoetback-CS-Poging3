@@ -12,14 +12,14 @@ using System.Runtime.CompilerServices;
 
 namespace SimpleCrud
 {
-    internal class CarApp
+    internal class GambleApp
     {
         UserContext userContext;
         public User? sessionUser = null;
         public bool isLoggedIn = false;
         public bool isAdmin = false;
 
-        public CarApp()
+        public GambleApp()
         {
             userContext = new UserContext();
 
@@ -410,25 +410,15 @@ namespace SimpleCrud
             switch (userInput)
             {
                 case "1":
-                    ShowMatches();
+                    Admin.ShowMatches();
                     break;
                 case "2":
-                    ShowMatchResults();
+                    Admin.ShowMatchResults();
                     break;
                 default:
                     ShowMenu();
                     break;
             }
-        }
-
-        private void ShowMatches()
-        {
-            // TODO: Show matches
-        }
-
-        private void ShowMatchResults()
-        {
-            // TODO: Show match results
         }
 
         private string ShowMenu()

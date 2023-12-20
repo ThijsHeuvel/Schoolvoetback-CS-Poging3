@@ -397,7 +397,38 @@ namespace SimpleCrud
 
         private void ShowAdminPage()
         {
-            Console.WriteLine("TODO : SHOW ADMIN PAGE");
+            Console.Clear();
+            Styling.AddHeader("Beheerpagina");
+
+            Styling.AddLine();
+            Styling.AddListOption("1 | Matches Tonen");
+            Styling.AddListOption("2 | Resultaten Matches");
+            Styling.AddListOption("X | Ga terug");
+            Styling.AddLine();
+
+            string userInput = Helpers.Ask("\nMaak uw keuze en druk op <ENTER>.");
+            switch (userInput)
+            {
+                case "1":
+                    ShowMatches();
+                    break;
+                case "2":
+                    ShowMatchResults();
+                    break;
+                default:
+                    ShowMenu();
+                    break;
+            }
+        }
+
+        private void ShowMatches()
+        {
+            // TODO: Show matches
+        }
+
+        private void ShowMatchResults()
+        {
+            // TODO: Show match results
         }
 
         private string ShowMenu()

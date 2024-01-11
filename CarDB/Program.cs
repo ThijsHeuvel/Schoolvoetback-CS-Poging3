@@ -6,8 +6,8 @@ namespace CarDB
     {
         static void Main(string[] args)
         {
-            CarApp carApp = new CarApp();
-            carApp.Run();
+            GambleApp gambleApp = new GambleApp();
+            gambleApp.Run();
         }
     }
 }

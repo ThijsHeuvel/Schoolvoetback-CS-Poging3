@@ -21,7 +21,7 @@ namespace CarDB
             List<Match> matches = data.GetTournamentMatches();
             foreach (Match match in matches)
             {
-                Console.WriteLine(match);
+                Console.WriteLine($"{match.Id} | {match.Team1_Name} - {match.Team2_Name}");
             }
         }
 

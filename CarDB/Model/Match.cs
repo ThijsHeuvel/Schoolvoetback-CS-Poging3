@@ -14,6 +14,11 @@ namespace CarDB.Model
         public int Team2_Id;
         public string Team2_Name;
 
+        public Match()
+        {
+            // Empty constructor (needed for deserialization)
+        }
+
         public Match(int team1_id, string team1_name, int team2_id, string team2_name)
         {
             Team1_Id = team1_id;

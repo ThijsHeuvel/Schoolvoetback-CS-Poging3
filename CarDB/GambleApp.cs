@@ -28,7 +28,7 @@ namespace SimpleCrud
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    Tournament tournament = new Tournament($"Tournament {i + 1}", "Description", "Team1", "Team2", DateTime.Now, DateTime.Now.AddHours(1));
+                    Tournament tournament = new Tournament($"Tournament {i + 1}", "Description", "Team1", "Team2", $"Location {i}",DateTime.Now, DateTime.Now.AddHours(1));
                     userContext.Tournaments.Add(tournament);
                 }
                 userContext.SaveChanges();

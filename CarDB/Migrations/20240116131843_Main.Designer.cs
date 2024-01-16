@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarDB.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20240116124554_Main")]
+    [Migration("20240116131843_Main")]
     partial class Main
     {
         /// <inheritdoc />
@@ -33,9 +33,6 @@ namespace CarDB.Migrations
 
                     b.Property<DateTime>("End_time")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -12,6 +12,9 @@ namespace CarDB.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamPlayer> Players { get; set; }
+        public DbSet<Bet> Bets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

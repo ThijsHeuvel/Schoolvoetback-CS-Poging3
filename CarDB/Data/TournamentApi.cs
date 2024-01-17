@@ -27,12 +27,31 @@ namespace CarDB.Data
 
             var matchesDataResponse = JsonConvert.DeserializeObject<List<Match>>(response);
 
-            if (matchesDataResponse == null)
+            while (matchesDataResponse == null)
             {
-                throw new InvalidResponseException("Tournament matches data response is null");
+                matchesDataResponse = JsonConvert.DeserializeObject<List<Match>>(response);
             }
 
             return matchesDataResponse;
+        }
+
+        public List<Result> GetTournamentResults()
+        {
+            string url = $"{apiRoot}/results.php?key={userKey}";
+            var response = client.GetStringAsync(url).Result;
+
+            // Show the raw response in the debug
+            Debug.Write(url);
+            Debug.WriteLine(response);
+
+            var resultsDataResponse = JsonConvert.DeserializeObject<List<Result>>(response);
+
+            while (resultsDataResponse == null)
+            {
+                resultsDataResponse = JsonConvert.DeserializeObject<List<Result>>(response);
+            }
+
+            return resultsDataResponse;
         }
     }
 }

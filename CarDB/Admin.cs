@@ -27,8 +27,28 @@ namespace CarDB
 
         public static void ShowMatchResults()
         {
-            // TODO: Show match results
-            Console.WriteLine("TODO: Show match results");
+            List<Result> results = data.GetTournamentResults();
+            foreach (Result result in results)
+            {
+                string winnerStatus;
+
+                if (result.Winner_Id == null)
+                {
+                    winnerStatus = "Gelijk spel.";
+                }
+                else
+                {
+                    if (result.Winner_Id == result.Team1_Id)
+                    {
+                        winnerStatus = result.Team1_Name + " Wint!";
+                    }
+                    else
+                    {
+                        winnerStatus = result.Team2_Name + " Wint!";
+                    }
+                }
+                Console.WriteLine($"{result.Id} | {result.Team1_Name} {result.Team1_Score} - {result.Team2_Score} {result.Team2_Name} || {winnerStatus}");
+            }
         }
     }
 }

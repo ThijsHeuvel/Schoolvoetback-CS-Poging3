@@ -18,7 +18,6 @@ namespace CarDB.Model
         public string Team2 { get; set; }
         public DateTime Start_time { get; set; }
         public DateTime End_time { get; set; }
-        public bool PaidOut { get; set; }
 
         public Tournament(string name, string? description, int team1Id, string team1, int team2Id, string team2, DateTime start_time, DateTime end_time)
         {
@@ -30,7 +29,6 @@ namespace CarDB.Model
             Team2 = team2;
             Start_time = start_time;
             End_time = end_time;
-            PaidOut = false;
         }
 
         public Tournament(int id, string name, string? description, int team1Id, string team1, int team2Id, string team2, DateTime start_time, DateTime end_time)
@@ -44,7 +42,6 @@ namespace CarDB.Model
             Team2 = team2;
             Start_time = start_time;
             End_time = end_time;
-            PaidOut = false;
         }
 
         public override string ToString()

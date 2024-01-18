@@ -18,15 +18,26 @@ namespace CarDB
 
         public static void ShowMatches()
         {
+            Console.Clear();
+            Styling.AddHeader("Toon wedstrijden");
+            Styling.AddLine();
+
             List<Match> matches = data.GetTournamentMatches();
             foreach (Match match in matches)
             {
                 Console.WriteLine($"{match.Id} | {match.Team1_Name} - {match.Team2_Name}");
             }
+
+            Styling.AddLine();
+            Styling.SkipLine();
         }
 
         public static void ShowMatchResults()
         {
+            Console.Clear();
+            Styling.AddHeader("Toon wedstrijd resultaten");
+            Styling.AddLine();
+
             List<Result> results = data.GetTournamentResults();
             foreach (Result result in results)
             {
@@ -50,6 +61,9 @@ namespace CarDB
 
                 Console.WriteLine($"{result.Id} | {result.Team1_Name} {result.Team1_Score} - {result.Team2_Score} {result.Team2_Name} | {winnerStatus}");
             }
+
+            Styling.AddLine();
+            Styling.SkipLine();
         }
     }
 }

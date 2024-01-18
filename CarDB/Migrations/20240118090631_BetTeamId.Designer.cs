@@ -3,6 +3,7 @@ using System;
 using CarDB.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarDB.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20240118090631_BetTeamId")]
+    partial class BetTeamId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +39,6 @@ namespace CarDB.Migrations
 
                     b.Property<int>("BetTeamId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("PaidOut")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("TournamentId")
                         .HasColumnType("int");
@@ -99,6 +99,9 @@ namespace CarDB.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("PaidOut")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("Start_time")
                         .HasColumnType("datetime(6)");

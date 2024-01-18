@@ -40,14 +40,15 @@ namespace CarDB
                 {
                     if (result.Winner_Id == result.Team1_Id)
                     {
-                        winnerStatus = result.Team1_Name + " Wint!";
+                        winnerStatus = $"{result.Team1_Name} wint!";
                     }
                     else
                     {
-                        winnerStatus = result.Team2_Name + " Wint!";
+                        winnerStatus = $"{result.Team2_Name} wint!";
                     }
                 }
-                Console.WriteLine($"{result.Id} | {result.Team1_Name} {result.Team1_Score} - {result.Team2_Score} {result.Team2_Name} || {winnerStatus}");
+
+                Console.WriteLine($"{result.Id} | {result.Team1_Name} {result.Team1_Score} - {result.Team2_Score} {result.Team2_Name} | {winnerStatus}");
             }
         }
     }

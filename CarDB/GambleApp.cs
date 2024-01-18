@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Query;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 //using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -23,16 +25,77 @@ namespace SimpleCrud
         {
             userContext = new UserContext();
 
-            // Test data
+            // TEST DATA //
+            if (userContext.Users.Find(-1) == null)
+            {
+                userContext.Users.Add(new User(-1, "admin", Helpers.HashPassword("admin"), 6969, true));
+                userContext.SaveChanges();
+            }
+            if (userContext.Users.Find(1) == null)
+            {
+                userContext.Users.Add(new User(1, "user", Helpers.HashPassword("user"), 50, false));
+                userContext.SaveChanges();
+            }
+
+            if (userContext.Users.Find(1) is not null)
+            {
+                userContext.Users.Find(1).Dollars = 50;
+            }
+
+            if (userContext.Teams.Count() == 0)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Team team = new Team($"Team {i + 1}");
+                    userContext.Teams.Add(team);
+                }
+
+                userContext.SaveChanges();
+            }
+
             if (userContext.Tournaments.Count() == 0)
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    Tournament tournament = new Tournament($"Tournament {i + 1}", "Description", "Team1", "Team2", DateTime.Now, DateTime.Now.AddHours(1));
+                    Team team1 = userContext.Teams.Find(new Random().Next(1, 11));
+                    Team team2 = userContext.Teams.Find(new Random().Next(1, 11));
+                    Debug.WriteLine($"{team1.Id} - {team2.Id}");
+                    Tournament tournament = new Tournament($"Tournament {i + 1}", "Description", team1.Id, team1.Name, team2.Id, team2.Name, DateTime.Now, DateTime.Now.AddHours(1));
                     userContext.Tournaments.Add(tournament);
                 }
                 userContext.SaveChanges();
             }
+
+            if (userContext.Players.Count() == 0)
+            {
+                Random random = new Random();
+                
+                for (int teamId = 1; teamId < userContext.Teams.Count() + 1; teamId++) // Iterate through teams (1-X)
+                {
+                    for (int i2 = 1; i2 < 6; i2++) // Add 5 players to each team (1-5)
+                    {
+                        TeamPlayer player = new TeamPlayer($"Player {i2}", random.Next(1, 11));
+                        player.TeamId = teamId;
+                        userContext.Players.Add(player);
+                    }
+                }
+
+                userContext.SaveChanges();
+            }
+
+            if (userContext.Bets.Count() == 0)
+            {
+                Random random = new Random();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Bet bet = new Bet(1, random.Next(1, 11), random.Next(25, 100), random.Next(1, 11), null);
+                    userContext.Bets.Add(bet);
+                }
+
+                userContext.SaveChanges();
+            }
+            // END OF TEST DATA //
         }
 
         internal void Run()
@@ -94,7 +157,8 @@ namespace SimpleCrud
                         }
                         else
                         {
-                            Console.WriteLine("YOU ARE NOT ADMIN!");
+                            // Toon mijn weddenschappen (geen admin)
+                            ShowUserBets();
                         }
                         break;
                     default:
@@ -240,11 +304,10 @@ namespace SimpleCrud
                 string name = tournament.Name;
                 string team1 = tournament.Team1;
                 string team2 = tournament.Team2;
-                //string location = tournament.Location;
                 string start_time = tournament.Start_time.ToString("HH:mm");
                 string end_time = tournament.End_time.ToString("HH:mm");
 
-                Styling.AddListOption($"{id} | {name} | {team1} - {team2} | LOCATION | {start_time} - {end_time}");
+                Styling.AddListOption($"{id} | {name} | {team1} - {team2} | {start_time} - {end_time}");
             }
             Styling.AddListOption("X | Ga terug");
 
@@ -282,7 +345,6 @@ namespace SimpleCrud
             Styling.ShowInfo($"Wedstrijd id: {tournament.Id}");
             Styling.ShowInfo(tournament.Name);
             Styling.ShowInfo($"{tournament.Team1} - {tournament.Team2}");
-            Styling.ShowInfo("LOCATION");
 
             string startTime = tournament.Start_time.ToString("HH:mm");
             string endTime = tournament.End_time.ToString("HH:mm");
@@ -363,7 +425,93 @@ namespace SimpleCrud
             Styling.SkipLine();
 
             Styling.AddLine();
-            Styling.AddLine();
+
+            // Show players of selected team
+            Team? selectedTeam = null;
+            foreach (Team team in userContext.Teams)
+            {
+                if (team.Name == teamName)
+                {
+                    selectedTeam = team;
+                    break;
+                }
+            }
+
+            if (selectedTeam is not null)
+            {
+
+                List<TeamPlayer> playerList = new List<TeamPlayer>();
+                foreach (TeamPlayer player in userContext.Players)
+                {
+                    if (player.TeamId == selectedTeam.Id)
+                    {
+                        playerList.Add(player);
+                        Styling.AddListOption($"{player.Id} | {player.Name}");
+                    }
+                }
+
+                Styling.AddLine();
+
+                Styling.SkipLine();
+
+                int userPlayerInput;
+                int userAmountInput;
+                while (true)
+                {
+                    userPlayerInput = Helpers.AskForInt("Welke speler denkt u dat het hoogst gaat scoren?");
+                    if (userPlayerInput >= 0)
+                    {
+                        bool foundPlayer = false;
+                        foreach(TeamPlayer player in playerList)
+                        {
+                            if (player.Id == userPlayerInput)
+                            {
+                                foundPlayer = true;
+                                break;
+                            }
+                        }
+
+                        if (foundPlayer)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Styling.ShowError("Speler niet gevonden!\n");
+                        }
+                    }
+                    else
+                    {
+                        Styling.ShowError("Spelernummer moet positief zijn!\n");
+                    }
+                }
+                while (true)
+                {
+                    userAmountInput = Helpers.AskForInt("Hoeveel wilt u inzetten?");
+                    if (userAmountInput >= 1)
+                    {
+                        if (userAmountInput <= sessionUser.Dollars)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Styling.ShowError("U heeft niet genoeg balans!\n");
+                        }
+                    }
+                    else
+                    {
+                        Styling.ShowError("Bedrag moet positief- en minimaal 1 zijn!\n");
+                    }
+                }
+
+                // Haal geld af van de balans
+                sessionUser.Dollars -= Math.Clamp(userAmountInput, 0, sessionUser.Dollars);
+
+                // Plaats een weddenschap waarbij score van team wordt ingevuld en NIET de speler
+                userContext.Bets.Add(new Bet(sessionUser.Id, tournament.Id, userAmountInput, userPlayerInput, null));
+                userContext.SaveChanges();
+            }
         }
 
         private void ShowScoreMenu(Tournament tournament, int teamIndex)
@@ -381,6 +529,7 @@ namespace SimpleCrud
             Styling.SkipLine();
 
             int userScoreInput;
+            int userAmountInput;
             while (true)
             {
                 userScoreInput = Helpers.AskForInt("Welke score denkt u dat het team gaat halen?");
@@ -393,6 +542,32 @@ namespace SimpleCrud
                     Styling.ShowError("\nScore moet positief zijn!\n");
                 }
             }
+            while (true)
+            {
+                userAmountInput = Helpers.AskForInt("Hoeveel wilt u inzetten?");
+                if (userAmountInput >= 0)
+                {
+                    if (userAmountInput <= sessionUser.Dollars)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Styling.ShowError("U heeft niet genoeg balans!\n");
+                    }
+                }
+                else
+                {
+                    Styling.ShowError("Bedrag moet positief- en minimaal 1 zijn!\n");
+                }
+            }
+
+            // Haal geld af van de balans
+            sessionUser.Dollars -= Math.Clamp(userAmountInput, 0, sessionUser.Dollars);
+
+            // Plaats een weddenschap waarbij score van team wordt ingevuld en NIET de speler
+            userContext.Bets.Add(new Bet(sessionUser.Id, tournament.Id, userAmountInput, null, userScoreInput));
+            userContext.SaveChanges();
         }
 
         private void ShowAdminPage()
@@ -403,6 +578,7 @@ namespace SimpleCrud
             Styling.AddLine();
             Styling.AddListOption("1 | Matches Tonen");
             Styling.AddListOption("2 | Resultaten Matches");
+            Styling.AddListOption("3 | Resultaten invullen");
             Styling.AddListOption("X | Ga terug");
             Styling.AddLine();
 
@@ -415,10 +591,60 @@ namespace SimpleCrud
                 case "2":
                     Admin.ShowMatchResults();
                     break;
-                default:
-                    ShowMenu();
+                case "3":
+                    Admin_FillOutResults();
                     break;
             }
+        }
+
+        public void Admin_FillOutResults()
+        {
+            Console.Clear();
+            Console.WriteLine("Actieve wedstrijden:");
+
+            foreach (Tournament tournament in userContext.Tournaments)
+            {
+                if (!tournament.PaidOut)
+                {
+                    Styling.AddListOption($"{tournament.Id} | {tournament.Name} | {tournament.Team1} - {tournament.Team2}");
+                }
+            }
+        }
+
+        private void ShowUserBets()
+        {
+            Console.Clear();
+            Styling.AddHeader("Mijn weddenschappen");
+
+            Styling.AddLine();
+
+            if (sessionUser is not null)
+            {
+                foreach (Bet bet in userContext.Bets)
+                {
+                    if (bet.UserId == sessionUser.Id)
+                    {
+                        using(UserContext userContext = new UserContext()) // Dit is blijkbaar nodig om het te laten werken, lol
+                        {
+                            foreach (Tournament tournament in userContext.Tournaments)
+                            {
+                                if (tournament.Id == bet.TournamentId)
+                                {
+                                    // TODO : get the score of winning team and compare it to the bet
+                                    // Get winning team
+
+
+
+                                    Styling.AddListOption($"{tournament.Name} | {tournament.Team1} - {tournament.Team2} | ${bet.Amount} ingezet");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Styling.AddLine();
         }
 
         private string ShowMenu()
@@ -451,7 +677,11 @@ namespace SimpleCrud
             {
                 menuOptions.Add("Uitloggen");
                 menuOptions.Add("Toon wedstrijden");
-                if (isAdmin)
+                if (!isAdmin)
+                {
+                    menuOptions.Add("Toon mijn weddenschappen");
+                }
+                else
                 {
                     menuOptions.Add("Beheerpagina [Admin]");
                 }

@@ -630,11 +630,6 @@ namespace SimpleCrud
                             {
                                 if (tournament.Id == bet.TournamentId)
                                 {
-                                    // TODO : get the score of winning team and compare it to the bet
-                                    // Get winning team
-
-
-
                                     Styling.AddListOption($"{tournament.Name} | {tournament.Team1} - {tournament.Team2} | ${bet.Amount} ingezet");
                                     break;
                                 }
